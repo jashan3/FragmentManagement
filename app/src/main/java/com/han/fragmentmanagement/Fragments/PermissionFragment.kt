@@ -5,10 +5,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
+import com.han.fragmentmanagement.Activities.FragmentType
+import com.han.fragmentmanagement.Activities.MainInterface
 import com.han.fragmentmanagement.R
+import com.han.fragmentmanagement.Widget.CoAlert
 
-class PermissionFragment : Fragment(){
+class PermissionFragment : Fragment(),CoAlert.NoticeDialogListener{
+    var listener: MainInterface? = null
+
     val shownIndex: Int by lazy {
         arguments?.getInt("index", 0) ?: 0
     }
@@ -20,6 +27,10 @@ class PermissionFragment : Fragment(){
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
+        listener = context as MainInterface
+        if (listener == null) {
+            throw ClassCastException("$context must implement OnArticleSelectedListener")
+        }
     }
 
     override fun onCreateView(
@@ -28,6 +39,9 @@ class PermissionFragment : Fragment(){
         savedInstanceState: Bundle?
     ): View? {
         val v = inflater.inflate(R.layout.fragment_permission,container,false)
+        v.findViewById<Button>(R.id.tst_btn).setOnClickListener{
+           listener?.onMoveFragment(FragmentType.HOME,true)
+        }
         return v
     }
 
@@ -47,5 +61,13 @@ class PermissionFragment : Fragment(){
 
             return f
         }
+    }
+
+    override fun onDialogPositiveClick(dialog: DialogFragment) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onDialogNegativeClick(dialog: DialogFragment) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 }
