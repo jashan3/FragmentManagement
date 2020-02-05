@@ -6,14 +6,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.Toast
+import androidx.annotation.UiThread
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager2.widget.ViewPager2
 import com.han.fragmentmanagement.Activities.FragmentType
 import com.han.fragmentmanagement.Activities.MainInterface
+import com.han.fragmentmanagement.Adapters.PermissionPagerAdaptor
 import com.han.fragmentmanagement.R
+import com.han.fragmentmanagement.Utils.L
 import com.han.fragmentmanagement.Widget.CoAlert
 
-class PermissionFragment : Fragment(),CoAlert.NoticeDialogListener{
+class PermissionFragment : Fragment() {
     var listener: MainInterface? = null
 
     val shownIndex: Int by lazy {
@@ -39,15 +45,63 @@ class PermissionFragment : Fragment(),CoAlert.NoticeDialogListener{
         savedInstanceState: Bundle?
     ): View? {
         val v = inflater.inflate(R.layout.fragment_permission,container,false)
-        v.findViewById<Button>(R.id.tst_btn).setOnClickListener{
-           listener?.onMoveFragment(FragmentType.HOME,true)
-        }
+        val pager = v.findViewById<ViewPager2>(R.id.myPager)
+        pager.adapter = context?.let { PermissionPagerAdaptor(it) }
+        pager.orientation = ViewPager2.ORIENTATION_HORIZONTAL
+
+
+
+        pager.registerOnPageChangeCallback(object :ViewPager2.OnPageChangeCallback(){
+            override fun onPageScrollStateChanged(state: Int) {
+                super.onPageScrollStateChanged(state)
+
+                L.d("onPageScrollStateChanged : ${state}")
+            }
+
+            override fun onPageScrolled(
+                position: Int,
+                positionOffset: Float,
+                positionOffsetPixels: Int
+            ) {
+                super.onPageScrolled(position, positionOffset, positionOffsetPixels)
+
+            if (position == 9){
+                kotlin.run {
+                    Toast.makeText(context,"tda",Toast.LENGTH_SHORT)
+                }
+
+            }
+                L.d("onPageScrolled : ${position}")
+            }
+
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+
+                L.d("onPageSelected : ${position}")
+            }
+        })
+
         return v
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
     }
+
+//    RecyclerView.OnScrollListener onScrollListener = new RecyclerView.OnScrollListener() {
+//        @Override
+//        public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+//            super.onScrolled(recyclerView, dx, dy);
+//
+//            LinearLayoutManager layoutManager = LinearLayoutManager.class.cast(recyclerView.getLayoutManager());
+//            int totalItemCount = layoutManager.getItemCount();
+//            int lastVisible = layoutManager.findLastCompletelyVisibleItemPosition();
+//
+//            if (lastVisible >= totalItemCount - 1) {
+//                Log.d(TAG, "lastVisibled");
+//            }
+//        }
+//    };
 
 
     companion object {
@@ -63,11 +117,4 @@ class PermissionFragment : Fragment(),CoAlert.NoticeDialogListener{
         }
     }
 
-    override fun onDialogPositiveClick(dialog: DialogFragment) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun onDialogNegativeClick(dialog: DialogFragment) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
 }
